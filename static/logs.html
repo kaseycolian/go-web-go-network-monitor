@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outage log — Go, Web, Go!</title>
+<link rel="icon" id="favicon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="themes.css?v=2">
+<link rel="stylesheet" href="style.css?v=16">
+<style>
+  main { max-width: 1080px; }
+  .log-head { display: flex; align-items: baseline; gap: 12px;
+    flex-wrap: wrap; }
+  .log-head .back { color: var(--accent); text-decoration: none;
+    font-size: 0.85rem; }
+  .log-head .back:hover { text-decoration: underline; }
+  details.trace { margin-top: 4px; }
+  details.trace summary { cursor: pointer; color: var(--accent);
+    font-size: 0.75rem; }
+  details.trace pre { font: 0.72rem/1.5 ui-monospace, Consolas, monospace;
+    color: var(--ink-2); overflow-x: auto; margin-top: 4px; }
+  .muted { color: var(--muted); }
+  td { vertical-align: top; }
+  .note-cell { max-width: 240px; }
+  .note-view { background: none; border: none; padding: 0; cursor: pointer;
+    color: var(--ink); font: inherit; text-align: left; }
+  .note-view:hover { color: var(--accent); }
+  .note-add, .note-edit { background: none; border: 1px dashed var(--border);
+    border-radius: 8px; padding: 2px 8px; cursor: pointer;
+    color: var(--muted); font-size: 0.75rem; }
+  .note-add:hover, .note-edit:hover { color: var(--accent);
+    border-color: var(--accent); }
+  .note-edit { border-style: solid; margin-left: 6px; }
+  #noteDlg textarea { width: 100%; min-height: 90px; margin: 10px 0;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--ink); border-radius: 10px; padding: 8px 10px;
+    font: inherit; resize: vertical; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <a class="brand-link" href="index.html" aria-label="Back to dashboard">
+      <span class="logo" aria-hidden="true">⌁</span>
+      <h1 id="machineName">This machine</h1>
+    </a>
+    <span id="monState" class="mon-state" role="status"></span>
+  </div>
+  <div class="conn-badge" id="connBadge">
+    <span id="connIcon" aria-hidden="true">…</span>
+    <span id="connName">detecting…</span>
+    <span class="label-chip"><span id="labelText">no label</span></span>
+  </div>
+  <div class="top-actions">
+    <span class="app-name">Go,&nbsp;Web,&nbsp;Go!</span>
+    <a class="btn btn-small" href="index.html">← dashboard</a>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <div class="log-head">
+      <h2>Full outage log</h2>
+      <span class="hint" id="count"></span>
+    </div>
+    <p class="fineprint">Every recorded outage, newest first — including
+      degraded periods. Times are shown in this device's timezone.
+      Export: <a id="csv" href="/api/export?table=outages&from=0&to=0">CSV</a>
+      · <a id="json" href="/api/export?table=outages&fmt=json&from=0&to=0">JSON</a></p>
+    <div class="table-scroll" style="max-height:none">
+      <table>
+        <thead><tr><th>start</th><th>end</th><th>duration</th><th>type</th>
+          <th>worst loss</th><th>location label</th><th>note</th>
+          <th>details</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h2>Notes</h2>
+    <p class="fineprint">Timeline annotations added from the dashboard.</p>
+    <div class="table-scroll" style="max-height:none">
+      <table>
+        <thead><tr><th>when</th><th>note</th></tr></thead>
+        <tbody id="notes"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<dialog id="noteDlg">
+  <form method="dialog" id="noteForm">
+    <h2>Note for this outage</h2>
+    <p class="fineprint" id="noteWhen"></p>
+    <textarea id="noteText" maxlength="500"
+      placeholder="e.g. router was mid-reboot / ISP confirmed maintenance"
+      ></textarea>
+    <p class="err" id="noteErr" role="alert"></p>
+    <div class="row">
+      <button type="button" class="btn" data-dismiss>Cancel</button>
+      <button class="btn btn-primary" id="noteSave" value="ok">Save</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="loginDlg">
+  <form method="dialog" id="loginForm">
+    <h2>Enter passcode</h2>
+    <p class="fineprint">This dashboard is passcode-protected. Enter the
+      passcode to continue.</p>
+    <input id="pin" type="password" inputmode="numeric" pattern="[0-9]*"
+           autocomplete="current-password" placeholder="passcode" required>
+    <p id="loginErr" class="err" role="alert"></p>
+    <div class="row">
+      <button class="btn btn-primary" id="loginGo" value="ok">Unlock</button>
+    </div>
+  </form>
+</dialog>
+<script src="favicon.js?v=2"></script>
+<script>
+"use strict";
+document.documentElement.dataset.theme =
+  localStorage.getItem("wtb_theme") || "neon";
+
+let csrf = localStorage.getItem("wtb_csrf") || null;
+
+/* passcode gate, mirrors app.js showLogin */
+function showLogin(blocking) {
+  return new Promise((resolve) => {
+    const dlg = document.getElementById("loginDlg");
+    document.getElementById("loginErr").textContent = "";
+    document.getElementById("pin").value = "";
+    dlg.returnValue = "";
+    if (dlg.open) return resolve(false);
+    dlg.showModal();
+    dlg.onkeydown = (ev) => {
+      if (blocking && ev.key === "Escape") ev.preventDefault();
+    };
+    document.getElementById("loginForm").onsubmit = async (ev) => {
+      ev.preventDefault();
+      try {
+        const r = await fetch("/api/auth/login", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            passcode: document.getElementById("pin").value }),
+        });
+        if (!r.ok) throw r;
+        csrf = (await r.json()).csrf;
+        localStorage.setItem("wtb_csrf", csrf);
+        dlg.close("ok");
+      } catch (e) {
+        document.getElementById("loginErr").textContent =
+          e.status === 429 ? "Too many attempts — wait 5 minutes."
+            : "Wrong passcode.";
+      }
+    };
+    dlg.onclose = () => resolve(dlg.returnValue === "ok");
+  });
+}
+
+const LAYER = {
+  link: ["--lay-link", "link — cable/dock/adapter/WiFi"],
+  lan: ["--lay-lan", "router/LAN"],
+  internet: ["--lay-inet", "internet (ISP)"],
+  degraded: ["--warn", "degraded (loss/latency)"],
+  dns: ["--warn", "DNS"],
+};
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = (n) => String(n).padStart(2, "0");
+function fmt(ts) {
+  const d = new Date(ts * 1000);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
+    `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+function dur(s) {
+  s = Math.round(s);
+  if (s < 60) return s + "s";
+  if (s < 3600) return `${(s / 60) | 0}m ${s % 60}s`;
+  return `${(s / 3600) | 0}h ${((s % 3600) / 60) | 0}m`;
+}
+
+const now = Date.now() / 1000;
+
+// same live header + favicon as the dashboard, refreshed every 30 s
+function refreshStatus() {
+  fetch("/api/status").then((r) => r.json()).then((s) => {
+    document.getElementById("machineName").textContent =
+      s.machine_name || "This machine";
+    const mon = document.getElementById("monState");
+    mon.innerHTML = (s.monitoring ? "●" : "⏸")
+      + ' <span class="mon-txt">' + (s.monitoring ? "recording" : "paused")
+      + "</span>";
+    mon.className = "mon-state " + (s.monitoring ? "rec" : "paused");
+    document.getElementById("connIcon").textContent =
+      s.conn_type === "wifi" ? "📶" : "🔌";
+    let name = s.conn_type === "wifi" ? (s.ssid || "WiFi")
+      : (s.adapter || "…");
+    if (s.link_mbps) name += ` · ${s.link_mbps >= 1000
+      ? (s.link_mbps / 1000) + " Gbps" : s.link_mbps + " Mbps"}`;
+    document.getElementById("connName").textContent = name;
+    document.getElementById("labelText").textContent = s.label || "no label";
+    wtbFavicon.update(s);
+  }).catch(() => {});
+}
+setInterval(refreshStatus, 30000);
+
+// exports with loading feedback
+function busyDownload(el, url, filename) {
+  if (el.getAttribute("aria-busy") === "true") return;
+  const sp = document.createElement("span");
+  sp.className = "spin";
+  el.setAttribute("aria-busy", "true");
+  el.prepend(sp);
+  fetch(url).then((r) => r.blob()).then((b) => {
+    const u = URL.createObjectURL(b);
+    const a = document.createElement("a");
+    a.href = u; a.download = filename; a.click();
+    URL.revokeObjectURL(u);
+  }).finally(() => { sp.remove(); el.removeAttribute("aria-busy"); });
+}
+document.getElementById("csv").onclick = (e) => {
+  e.preventDefault();
+  busyDownload(e.target, `/api/export?table=outages&from=0&to=${now}`,
+               "whatthebit_outages.csv");
+};
+document.getElementById("json").onclick = (e) => {
+  e.preventDefault();
+  busyDownload(e.target,
+               `/api/export?table=outages&fmt=json&from=0&to=${now}`,
+               "whatthebit_outages.json");
+};
+
+let outages = [];
+const NOTE_PREVIEW = 48;
+
+function noteCell(o) {
+  if (!o.note)
+    return `<button class="note-add" data-id="${o.id}">＋ add note</button>`;
+  const full = esc(o.note);
+  const short = o.note.length > NOTE_PREVIEW
+    ? esc(o.note.slice(0, NOTE_PREVIEW)) + "…" : full;
+  return `<button class="note-view" data-id="${o.id}" data-open="0"
+    title="click to ${o.note.length > NOTE_PREVIEW ? "expand" : "edit"}"
+    >${short}</button><button class="note-edit" data-id="${o.id}"
+    aria-label="edit note">✎</button>`;
+}
+
+function render() {
+  document.getElementById("count").textContent =
+    `${outages.length} outage${outages.length === 1 ? "" : "s"} on record`;
+  document.getElementById("rows").innerHTML = outages.map((o) => {
+    const [cvar, name] = LAYER[o.layer] || ["--lay-link", o.layer];
+    const end = o.end_ts || now;
+    let details = o.self_saturated
+      ? "<div>⚠ this PC was saturating the link</div>" : "";
+    if (o.traceroute) {
+      details += `<details class="trace"><summary>traceroute during
+        outage</summary><pre>${o.traceroute.map((h) =>
+          `${String(h.hop).padStart(2)}  ${h.ip || "*"}  ${
+            h.ms != null ? h.ms + " ms" : "timeout"}`).join("\n")}</pre>
+        </details>`;
+    } else if (o.layer === "link" || o.layer === "lan") {
+      details += `<span class="muted">no traceroute — local drop, nothing
+        to trace</span>`;
+    }
+    return `<tr>
+      <td>${fmt(o.start_ts)}</td>
+      <td>${o.end_ts ? fmt(o.end_ts) : "<strong>ongoing</strong>"}</td>
+      <td>${dur(end - o.start_ts)}</td>
+      <td><span class="layer-chip"><i class="sw"
+        style="background:var(${cvar})"></i>${name}</span></td>
+      <td>${o.worst_loss_pct != null
+        ? o.worst_loss_pct.toFixed(0) + "%" : "–"}</td>
+      <td>${o.label_at_time ? esc(o.label_at_time)
+        : '<span class="muted">unlabeled</span>'}</td>
+      <td class="note-cell">${noteCell(o)}</td>
+      <td>${details || '<span class="muted">–</span>'}</td></tr>`;
+  }).join("") || "<tr><td colspan=8>no outages recorded 🎉</td></tr>";
+  wireNotes();
+}
+
+function wireNotes() {
+  document.querySelectorAll(".note-view").forEach((b) => {
+    b.onclick = () => {
+      const o = outages.find((x) => x.id === +b.dataset.id);
+      if (o.note.length <= NOTE_PREVIEW) return openNoteDlg(o);
+      const open = b.dataset.open === "1";
+      b.textContent = open
+        ? o.note.slice(0, NOTE_PREVIEW) + "…" : o.note;
+      b.dataset.open = open ? "0" : "1";
+    };
+  });
+  document.querySelectorAll(".note-add, .note-edit").forEach((b) => {
+    b.onclick = () =>
+      openNoteDlg(outages.find((x) => x.id === +b.dataset.id));
+  });
+}
+
+const noteDlg = document.getElementById("noteDlg");
+let noteFor = null;
+function openNoteDlg(o) {
+  noteFor = o;
+  document.getElementById("noteWhen").textContent =
+    `${fmt(o.start_ts)} · ${(LAYER[o.layer] || [0, o.layer])[1]}`;
+  document.getElementById("noteText").value = o.note || "";
+  document.getElementById("noteErr").textContent = "";
+  noteDlg.showModal();
+}
+
+async function saveNote(text) {
+  const call = () => fetch("/api/outage/note", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-CSRF": csrf || "" },
+    body: JSON.stringify({ id: noteFor.id, text }),
+  });
+  let r = await call();
+  if (r.status === 401 && await showLogin(false)) r = await call();
+  if (!r.ok) {
+    document.getElementById("noteErr").textContent =
+      "Saving failed (" + r.status + ").";
+    return false;
+  }
+  return true;
+}
+
+document.getElementById("noteForm").onsubmit = async (ev) => {
+  if (ev.submitter && ev.submitter.value === "cancel") return;
+  ev.preventDefault();
+  const btn = document.getElementById("noteSave");
+  const sp = document.createElement("span");
+  sp.className = "spin";
+  btn.setAttribute("aria-busy", "true");
+  btn.prepend(sp);
+  try {
+    const text = document.getElementById("noteText").value.trim();
+    if (await saveNote(text)) {
+      noteFor.note = text || null;
+      noteDlg.close();
+      render();
+    }
+  } finally {
+    sp.remove();
+    btn.removeAttribute("aria-busy");
+  }
+};
+
+function loadData() {
+  fetch(`/api/outages?from=0&to=${now}`).then((r) => r.json()).then((o) => {
+    outages = o;
+    render();
+  });
+
+  fetch(`/api/notes?from=0&to=${now}`).then((r) => r.json()).then((ns) => {
+    document.getElementById("notes").innerHTML = ns.reverse().map((n) =>
+      `<tr><td>${fmt(n.ts)}</td><td>${esc(n.text)}</td></tr>`).join("")
+      || "<tr><td colspan=2>none yet</td></tr>";
+  });
+}
+
+// dialog Cancel buttons are type=button so Enter submits the primary action
+document.addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-dismiss]");
+  if (b) { const d = b.closest("dialog"); if (d) d.close("cancel"); }
+});
+
+// gate on the passcode when protected and not on the host, then load
+async function boot() {
+  let st = { enabled: false, authed: true, superuser: true };
+  try { st = await (await fetch("/api/auth/state")).json(); } catch { /* */ }
+  if (st.enabled && !st.authed && !st.superuser) await showLogin(true);
+  refreshStatus();
+  loadData();
+}
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+/* Three themes as CSS custom properties. Series palettes were validated with
+   the dataviz six-checks script against each theme's own chart surface
+   (lightness band, chroma floor, adjacent-pair CVD ΔE, 3:1 contrast). Series
+   colors follow the entity: 1=router, 2=1.1.1.1, 3=8.8.8.8, 4=ISP hop,
+   5=download, 6=upload. Status colors are reserved for states and never
+   reused as series. */
+
+:root, :root[data-theme="neon"] {
+  color-scheme: dark;
+  --page: #07080b;
+  --surface: #0d0f14;
+  --surface-2: #141822;
+  --ink: #f2f4f8;
+  --ink-2: #aab2c0;
+  --muted: #78808f;
+  --grid: #1d222e;
+  --baseline: #2b3242;
+  --border: rgba(255,255,255,0.10);
+  --accent: #e04a92;
+
+  --series-1: #2196d9;  /* router */
+  --series-2: #e06a2b;  /* 1.1.1.1 */
+  --series-3: #10a659;  /* 8.8.8.8 */
+  --series-4: #e04a92;  /* ISP hop */
+  --series-5: #b98a00;  /* download */
+  --series-6: #9a79ea;  /* upload */
+
+  --ok: #0ca30c;
+  --warn: #fab219;
+  --serious: #ec835a;
+  --crit: #d03b3b;
+  /* outage layer identities — deliberately away from the green/amber/red
+     quality ramp (CVD-checked as a set with --ok/--warn) */
+  --lay-link: #d6336c;  /* link outage: cable/dock/adapter/WiFi */
+  --lay-lan: #1098ad;   /* router/LAN outage */
+  --lay-inet: #9a79ea;  /* internet (ISP) outage */
+  --idle: #2b3242;      /* not monitoring */
+  --glow: 0 0 14px;
+  /* scrollbar tint (Firefox solid fallback); recomputes per theme */
+  --scrollbar: color-mix(in srgb, var(--accent) 55%, var(--page));
+}
+
+:root[data-theme="midnight"] {
+  color-scheme: dark;
+  --page: #0c0f1a;
+  --surface: #141826;
+  --surface-2: #1b2033;
+  --ink: #e8ebf4;
+  --ink-2: #a7aec4;
+  --muted: #767d95;
+  --grid: #222741;
+  --baseline: #303755;
+  --border: rgba(255,255,255,0.09);
+  --accent: #5a7de0;
+
+  --series-1: #28a396;
+  --series-2: #5a7de0;
+  --series-3: #b8892b;
+  --series-4: #c76f8d;
+  --series-5: #8f7fd6;
+  --series-6: #4e9e5f;
+
+  --ok: #0ca30c;
+  --warn: #fab219;
+  --serious: #ec835a;
+  --crit: #d03b3b;
+  --lay-link: #d6336c;
+  --lay-lan: #279fb5;
+  --lay-inet: #8f7fd6;
+  --idle: #303755;
+  --glow: none;
+}
+
+:root[data-theme="daylight"] {
+  color-scheme: light;
+  --page: #f4f2ec;
+  --surface: #fdfbf7;
+  --surface-2: #f1eee6;
+  --ink: #17181c;
+  --ink-2: #4d4f58;
+  --muted: #85878f;
+  --grid: #e6e3d9;
+  --baseline: #c9c6bb;
+  --border: rgba(20,20,25,0.12);
+  --accent: #d63384;
+
+  --series-1: #2a78d6;
+  --series-2: #c4501b;
+  --series-3: #0e8a4d;
+  --series-4: #d63384;
+  --series-5: #a06b00;
+  --series-6: #7048c9;
+
+  --ok: #0a8a0a;
+  --warn: #c98500;
+  --serious: #cf5a2a;
+  --crit: #d03b3b;
+  --lay-link: #c2255c;
+  --lay-lan: #0b7285;
+  --lay-inet: #7048c9;
+  --idle: #d8d5ca;
+  --glow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
