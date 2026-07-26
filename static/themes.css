@@ -17,6 +17,7 @@
   --baseline: #2b3242;
   --border: rgba(255,255,255,0.10);
   --accent: #e04a92;
+  --logo: #22e0a3;   /* app-mark: neon green-teal, complements the pink */
 
   --series-1: #2196d9;  /* router */
   --series-2: #e06a2b;  /* 1.1.1.1 */
@@ -52,6 +53,7 @@
   --baseline: #303755;
   --border: rgba(255,255,255,0.09);
   --accent: #5a7de0;
+  --logo: #3fb8ad;   /* app-mark: aqua, coordinates with the indigo */
 
   --series-1: #28a396;
   --series-2: #5a7de0;
@@ -83,6 +85,7 @@
   --baseline: #c9c6bb;
   --border: rgba(20,20,25,0.12);
   --accent: #d63384;
+  --logo: #0f766e;   /* app-mark: deep teal, reads on the light surface */
 
   --series-1: #2a78d6;
   --series-2: #c4501b;

@@ -87,7 +87,7 @@ button:disabled { cursor: not-allowed; }
   letter-spacing: -0.01em; white-space: nowrap;
   display: inline-flex; align-items: center; gap: 5px; }
 .app-name::before { content: "⌁"; font-size: 1.3em; line-height: 1;
-  text-shadow: var(--glow) var(--accent); }
+  color: var(--logo); text-shadow: var(--glow) var(--logo); }
 .peer-switch { background: var(--surface-2); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; }
 
