@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
     collector.shutdown()
 
 
-app = FastAPI(title="What the Bit", lifespan=lifespan)
+app = FastAPI(title="Go Web, Go!", lifespan=lifespan)
 
 
 # ---------------------------------------------------------------- auth gate
@@ -343,7 +343,7 @@ def export(t_from: float | None = Query(None, alias="from"),
     return Response(
         buf.getvalue(), media_type="text/csv",
         headers={"Content-Disposition":
-                 f"attachment; filename=whatthebit_{table}.csv"})
+                 f"attachment; filename=gowebgo_{table}.csv"})
 
 
 # ---------------------------------------------------------------- SSE

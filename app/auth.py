@@ -1,4 +1,4 @@
-"""Passcode auth for What the Bit.
+"""Passcode auth for Go Web, Go!.
 
 Model:
 - The passcode is a numeric PIN (>= 4 digits), stored as a scrypt hash in

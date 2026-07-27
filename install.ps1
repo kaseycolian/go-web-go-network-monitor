@@ -1,4 +1,4 @@
-# What the Bit - Windows installer.
+# Go Web, Go! - Windows installer.
 # NOTE: keep this file pure ASCII - Windows PowerShell 5.1 misreads UTF-8
 # without a BOM, and characters like em dashes break parsing.
 # Creates a venv, installs deps, sets a dashboard passcode, opens the firewall
@@ -6,7 +6,7 @@
 # monitor starts at logon. Run from the project folder:
 #   powershell -ExecutionPolicy Bypass -File install.ps1
 param(
-    [int]$Port = 8745,
+    [int]$Port = 46299,
     [string]$PythonExe = ""
 )
 $ErrorActionPreference = "Stop"
@@ -51,7 +51,7 @@ if (-not $hasPin) {
 }
 
 # -- firewall: allow inbound on the Private profile only
-$ruleName = "What the Bit ($Port)"
+$ruleName = "Go Web, Go! ($Port)"
 if (-not (Get-NetFirewallRule -DisplayName $ruleName -ErrorAction SilentlyContinue)) {
     try {
         New-NetFirewallRule -DisplayName $ruleName -Direction Inbound `
@@ -65,7 +65,7 @@ if (-not (Get-NetFirewallRule -DisplayName $ruleName -ErrorAction SilentlyContin
 }
 
 # -- scheduled task: start at logon, restart on failure
-$taskName = "WhatTheBit"
+$taskName = "GoWebGo"
 $action = New-ScheduledTaskAction -Execute $venvPy `
     -Argument "-m app.main" -WorkingDirectory $root
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
@@ -85,3 +85,23 @@ $ip = (Get-NetIPAddress -AddressFamily IPv4 |
 Write-Host ""
 Write-Host "Done! Dashboard:  http://localhost:$Port"
 if ($ip) { Write-Host "From your phone: http://${ip}:$Port" }
+
+Write-Host ""
+Write-Host "Creating Windows Desktop Shortcut..."
+
+Write-Host ""
+
+try { powershell -ExecutionPolicy Bypass -File make-shortcut.ps1 } catch { 
+    Write-Host "Unable to create shortcut. Must run launch.ps1 script for future usages." }
+
+Write-Host ""
+Write-Host ""
+
+Write-Host "Monitoring has begun, you may close this terminal at any time...."
+
+Write-Host ""
+Write-Host ""
+Write-Host "Use Go, Web, Go! desktop shortcut to launch in the future."
+
+Write-Host ""
+Write-Host ""

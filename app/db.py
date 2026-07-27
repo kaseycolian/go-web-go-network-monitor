@@ -1,4 +1,4 @@
-"""SQLite persistence for What the Bit.
+"""SQLite persistence for Go Web, Go!.
 
 Single connection in WAL mode guarded by a lock — write volume is tiny
 (a few rows/second). All timestamps are unix epoch seconds (UTC, float).

@@ -1,4 +1,4 @@
-# What the Bit - creates a one-click desktop shortcut.
+# Go Web, Go! - creates a one-click desktop shortcut.
 # Run once from the project folder:  powershell -ExecutionPolicy Bypass -File make-shortcut.ps1
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
@@ -43,14 +43,14 @@ if (-not (Test-Path $icoPath)) {
 
 # -- the shortcut itself
 $desktop = [Environment]::GetFolderPath("Desktop")
-$lnkPath = Join-Path $desktop "What the Bit.lnk"
+$lnkPath = Join-Path $desktop "Go Web, Go!.lnk"
 $ws = New-Object -ComObject WScript.Shell
 $shortcut = $ws.CreateShortcut($lnkPath)
 $shortcut.TargetPath = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 $shortcut.Arguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$root\launch.ps1`""
 $shortcut.WorkingDirectory = $root
 $shortcut.IconLocation = $icoPath
-$shortcut.Description = "Open the What the Bit network dashboard"
+$shortcut.Description = "Open the Go Web, Go! network dashboard"
 $shortcut.WindowStyle = 7   # minimized - the launcher runs invisibly anyway
 $shortcut.Save()
 

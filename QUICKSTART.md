@@ -27,7 +27,7 @@
 
 **Windows** (PowerShell):
 ```
-Start-ScheduledTask -TaskName WhatTheBit
+Start-ScheduledTask -TaskName GoWebGo
 ```
 or run it directly in a terminal:
 ```
@@ -37,18 +37,18 @@ or run it directly in a terminal:
 
 **Raspberry Pi / Linux:**
 ```
-systemctl --user start whatthebit
+systemctl --user start gowebgo
 ```
 
 ## Open the dashboard
 
-- On the machine itself: **http://localhost:8745**
-- From your phone or any device on your WiFi: **http://THE-MACHINE-IP:8745**
-  (the installer prints this address; e.g. `http://192.168.50.23:8745`)
+- On the machine itself: **http://localhost:46299**
+- From your phone or any device on your WiFi: **http://THE-MACHINE-IP:46299**
+  (the installer prints this address; e.g. `http://192.168.50.23:46299`)
 
 The first time you open it from another device, enter the passcode you set at
 install. You stay logged in on that device. On the host machine itself
-(`http://localhost:8745`) you never need the passcode, and from there you can
+(`http://localhost:46299`) you never need the passcode, and from there you can
 reset it or turn protection on/off under **Settings → Security**.
 
 Tip: on your phone, use the browser's **Add to Home Screen** to install it

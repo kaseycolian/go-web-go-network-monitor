@@ -18,15 +18,15 @@ location label active at the time — so "ethernet via dock in bedroom" vs
 ## Quick start
 
 1. **Get the files onto the machine** you want to monitor — copy this whole
-   folder anywhere (e.g. `D:\sources\what-the-bit` or `~/what-the-bit`).
+   folder anywhere (e.g. `D:\sources\go-web-go` or `~/go-web-go`).
 2. **Install Python 3** if it isn't already there
    ([python.org](https://www.python.org/downloads/), or
    `winget install Python.Python.3.14` on Windows,
    `sudo apt install python3-venv` on a Pi).
 3. **Run the installer** (below) — it sets everything up and starts the
    monitor.
-4. **Open the dashboard** — `http://localhost:8745` on the machine itself,
-   or the `http://<ip>:8745` address the installer prints from any phone,
+4. **Open the dashboard** — `http://localhost:46299` on the machine itself,
+   or the `http://<ip>:46299` address the installer prints from any phone,
    tablet, or PC on your home network.
 
 ### Install on Windows
@@ -35,7 +35,7 @@ Open PowerShell **as Administrator** (right-click Start → "Terminal
 (Admin)"), then:
 
 ```powershell
-cd path\to\what-the-bit
+cd path\to\go-web-go
 powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
@@ -46,7 +46,7 @@ hood).
 
 Once installed, the monitor is already running (the installer starts it).
 To run it manually instead — e.g. to watch its output — first stop the
-background task (`Stop-ScheduledTask -TaskName WhatTheBit` in PowerShell),
+background task (`Stop-ScheduledTask -TaskName GoWebGo` in PowerShell),
 then from the project folder:
 
 ```
@@ -54,13 +54,13 @@ then from the project folder:
 ./.venv/Scripts/python -m app.main   # Git Bash / IDE bash terminals
 ```
 
-If you see a port-in-use error on 8745, the background task is still
-running — the dashboard is already up at http://localhost:8745.
+If you see a port-in-use error on 46299, the background task is still
+running — the dashboard is already up at http://localhost:46299.
 
 The installer:
 - creates a private Python environment (`.venv`) and installs dependencies
 - asks you to set a **dashboard passcode** (4+ digits) that other devices need
-- opens firewall port 8745 for **private networks only** — this is what lets
+- opens firewall port 46299 for **private networks only** — this is what lets
   your phone reach the dashboard
 - registers a Scheduled Task so monitoring **starts automatically at logon**
   and restarts itself if it ever crashes
@@ -75,23 +75,23 @@ To run it by hand instead (no auto-start): `.venv\Scripts\python -m app.main`
 ### Install on Linux / Raspberry Pi
 
 ```bash
-cd path/to/what-the-bit
+cd path/to/go-web-go
 bash install.sh
 ```
 
 Same deal: venv + dependencies and a systemd user service so it starts
 **on boot** (not just login — fine for a headless Pi). Manage it with
-`systemctl --user status|restart|stop whatthebit`, logs with
-`journalctl --user -u whatthebit`.
+`systemctl --user status|restart|stop gowebgo`, logs with
+`journalctl --user -u gowebgo`.
 
 Pi notes:
 - Works headless: copy the folder over with
-  `scp -r what-the-bit pi@<pi-ip>:~/` and run the installer over SSH.
+  `scp -r go-web-go pi@<pi-ip>:~/` and run the installer over SSH.
 - If venv creation fails: `sudo apt install python3-venv`, then re-run.
 - No firewall step needed — Raspberry Pi OS has none enabled by default.
-  If you use `ufw`, allow the port: `sudo ufw allow 8745/tcp`.
+  If you use `ufw`, allow the port: `sudo ufw allow 46299/tcp`.
 - Find the Pi's dashboard address with `hostname -I` →
-  `http://<that-ip>:8745`.
+  `http://<that-ip>:46299`.
 
 ## Accessing the dashboard from your phone / other devices
 
@@ -102,13 +102,13 @@ install on the phone.
    - Windows: `ipconfig` → "IPv4 Address" (e.g. `192.168.50.23`)
    - Linux/Pi: `hostname -I`
 2. On your phone/tablet/other PC, open a browser and go to
-   `http://<that-ip>:8745` — e.g. `http://192.168.50.23:8745`
+   `http://<that-ip>:46299` — e.g. `http://192.168.50.23:46299`
 3. Optional: use the browser's **"Add to Home Screen"** — the dashboard
    installs like an app with its own icon and full-screen view.
 
 When passcode protection is on, each device enters the passcode once and then
 stays logged in until the session expires (about a week). The machine running
-the monitor is exempt: open `http://localhost:8745` **on that machine** and you
+the monitor is exempt: open `http://localhost:46299` **on that machine** and you
 have full access with no passcode — and only from there can you reset a
 forgotten passcode or turn protection on/off (**Settings → Security**). Other
 devices can never reset it. Don't expose the dashboard to the internet.
@@ -123,7 +123,7 @@ your router's admin page) so the address never changes; then bookmark it.
 - Windows: the firewall rule only allows **Private** networks. Check the
   network is marked Private: Settings → Network & internet → your network →
   "Private network". Then re-run `install.ps1` as admin if needed.
-- Confirm the monitor is running: does `http://localhost:8745` work on the
+- Confirm the monitor is running: does `http://localhost:46299` work on the
   machine itself? If not, re-run the installer and watch for errors.
 - The dashboard is (deliberately) **not reachable from the internet** — LAN
   only. Don't port-forward it; if you need remote access, use a VPN into
@@ -166,7 +166,7 @@ power-saving option is a classic cause of intermittent ethernet drops.
 
 Repeat the install on each machine (any mix of Windows/Linux/Pi — the
 monitor is per-machine). Add the others' URLs to `config.json` →
-`"peers": ["http://192.168.1.20:8745"]` and a machine switcher appears in
+`"peers": ["http://192.168.1.20:46299"]` and a machine switcher appears in
 the header.
 
 ## Config
@@ -186,7 +186,7 @@ outage while testing, add a non-routable IP to `extra_targets`
   rate-limited. The passcode is required for **everything** from other devices,
   not just changes.
 - **Localhost is superuser**: requests over loopback (browsing
-  `http://localhost:8745` on the host) never need the passcode and are the only
+  `http://localhost:46299` on the host) never need the passcode and are the only
   way to reset it or enable/disable protection — the forgot-passcode escape
   hatch. Reach the host by SSH and use `localhost` if it's headless. Hitting the
   machine's LAN IP (even from the host) counts as a remote device.
@@ -199,7 +199,7 @@ outage while testing, add a non-routable IP to `extra_targets`
   remote access, use a VPN into your home network.
 - The app talks to the internet only for probes (ping/DNS/HTTP checks,
   api.ipify.org) and Cloudflare's speed-test endpoint. All data stays in
-  `whatthebit.db` on this machine.
+  `gowebgo.db` on this machine.
 
 ## Future ideas (not built)
 

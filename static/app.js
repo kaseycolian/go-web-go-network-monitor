@@ -1011,7 +1011,7 @@ function wireActions() {
         const url = URL.createObjectURL(await r.blob());
         const a = document.createElement("a");
         a.href = url;
-        a.download = `whatthebit_${table}.csv`;
+        a.download = `gowebgo_${table}.csv`;
         a.click();
         URL.revokeObjectURL(url);
       }).catch(alertErr);
