@@ -47,7 +47,9 @@ if (-not $hasPin) {
     }
     & $venvPy -m app.auth set-passcode $pin
 } else {
+    Write-Host ""
     Write-Host "Passcode already set - keeping it."
+    Write-Host ""
 }
 
 # -- firewall: allow inbound on the Private profile only
@@ -98,12 +100,12 @@ try { powershell -ExecutionPolicy Bypass -File make-shortcut.ps1 } catch {
 
 Write-Host ""
 Write-Host ""
-
-Write-Host "Monitoring has begun, you may close this terminal at any time...."
-
-Write-Host ""
-Write-Host ""
 Write-Host "Use Go, Web, Go! desktop shortcut to launch in the future."
+
+Write-Host ""
+Write-Host ""
+
+Write-Host "Mission control has begun monitoring, you may close this terminal at any time...."
 
 Write-Host ""
 Write-Host ""
