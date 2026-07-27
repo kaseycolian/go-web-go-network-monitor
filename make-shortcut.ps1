@@ -1,5 +1,7 @@
 # Go Web, Go! - creates a one-click desktop shortcut.
+
 # Run once from the project folder:  powershell -ExecutionPolicy Bypass -File make-shortcut.ps1
+
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 
