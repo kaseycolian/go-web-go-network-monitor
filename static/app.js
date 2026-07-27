@@ -24,13 +24,36 @@ const state = {
 
 /* ---------------------------------------------------------------- theme */
 
-const THEMES = ["neon", "midnight", "daylight"];
-function setTheme(t) {
-  if (!THEMES.includes(t)) t = "neon";
-  document.documentElement.dataset.theme = t;
-  localStorage.setItem("wtb_theme", t);
-  document.querySelectorAll(".theme-pick button").forEach(
-    (b) => b.classList.toggle("active", b.dataset.theme === t));
+/* theme-service themes (mirrors static/theme/themes.index.json). "" = Auto
+   (default Rink Classic, follows OS light/dark). */
+const THEMES = [
+  { id: "", label: "Auto (Rink Classic)" },
+  { id: "rink-classic-dark", label: "Rink Classic · Dark" },
+  { id: "rink-classic-dark-no-background", label: "Rink Classic (No BG) · Dark" },
+  { id: "midnight-arcade-dark", label: "Midnight Arcade · Dark" },
+  { id: "midnight-arcade-dark-no-background", label: "Midnight Arcade (No BG) · Dark" },
+  { id: "hot-neon-dark", label: "Hot Neon · Dark" },
+  { id: "hot-neon-dark-no-background", label: "Hot Neon (No BG) · Dark" },
+  { id: "synthwave-sunset-dark", label: "Synthwave Sunset · Dark" },
+  { id: "acid-arcade-dark", label: "Acid Arcade · Dark" },
+  { id: "rink-classic-light", label: "Rink Classic · Light" },
+  { id: "rink-classic-light-no-background", label: "Rink Classic (No BG) · Light" },
+  { id: "midnight-arcade-light", label: "Midnight Arcade · Light" },
+  { id: "midnight-arcade-light-no-background", label: "Midnight Arcade (No BG) · Light" },
+  { id: "acid-arcade-light", label: "Acid Arcade · Light" },
+  { id: "acid-arcade-light-no-background", label: "Acid Arcade (No BG) · Light" },
+  { id: "hot-neon-light", label: "Hot Neon · Light" },
+  { id: "synthwave-sunset-light", label: "Synthwave Sunset · Light" },
+];
+
+/* apply a theme id (or "" for Auto), persist it, and re-render the charts
+   (Chart.js reads its colors from CSS vars, so they must be redrawn) */
+function setTheme(id) {
+  const root = document.documentElement;
+  if (id) { root.setAttribute("data-theme", id); localStorage.setItem("theme", id); }
+  else { root.removeAttribute("data-theme"); localStorage.removeItem("theme"); }
+  const sel = $("themeSelect");
+  if (sel) sel.value = id;
   restyleCharts();
   drawTimeline();
   drawSparks();
@@ -862,8 +885,13 @@ function wireActions() {
     $("latTip").hidden = !open;
     $("latInfo").setAttribute("aria-expanded", String(open));
   };
-  document.querySelectorAll(".theme-pick button").forEach(
-    (b) => (b.onclick = () => setTheme(b.dataset.theme)));
+  const themeSel = $("themeSelect");
+  if (themeSel) {
+    if (!themeSel.options.length)
+      THEMES.forEach((t) => themeSel.add(new Option(t.label, t.id)));
+    themeSel.value = document.documentElement.getAttribute("data-theme") || "";
+    themeSel.onchange = () => setTheme(themeSel.value);
+  }
 
   if ($("unitSelect")) {
     $("unitSelect").value = state.unit;
@@ -1188,7 +1216,8 @@ function startDashboard() {
 }
 
 async function boot() {
-  setTheme(localStorage.getItem("wtb_theme") || "neon");
+  // theme is already applied pre-paint by theme/theme-init.js; the selector is
+  // populated + synced in wireActions()
   try {
     state.auth = await api("/api/auth/state");
   } catch { /* if this fails we'll surface it once the dashboard loads */ }

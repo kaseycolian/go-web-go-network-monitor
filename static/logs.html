@@ -5,8 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Outage log — Go, Web, Go!</title>
 <link rel="icon" id="favicon" href="icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="themes.css?v=5">
-<link rel="stylesheet" href="style.css?v=19">
+<script src="theme/theme-init.js"></script>
+<link rel="stylesheet" href="theme/theme.css?v=1">
+<link rel="stylesheet" href="theme/effects.css?v=1">
+<link rel="stylesheet" href="theme/bridge.css?v=1">
+<link rel="stylesheet" href="style.css?v=20">
 <style>
   main { max-width: 1720px; }
   .log-head { display: flex; align-items: baseline; gap: 12px;
@@ -37,7 +40,7 @@
     font: inherit; resize: vertical; }
 </style>
 </head>
-<body>
+<body class="fx-grid">
 <header class="topbar">
   <div class="brand">
     <a class="brand-link" href="index.html" aria-label="Back to dashboard">
@@ -117,8 +120,7 @@
 <script src="favicon.js?v=2"></script>
 <script>
 "use strict";
-document.documentElement.dataset.theme =
-  localStorage.getItem("wtb_theme") || "neon";
+/* theme is applied pre-paint by theme/theme-init.js (reads localStorage) */
 
 let csrf = localStorage.getItem("wtb_csrf") || null;
 

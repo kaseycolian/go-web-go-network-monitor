@@ -6,10 +6,14 @@
 <title>Go, Web, Go!</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" id="favicon" href="icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="themes.css?v=5">
-<link rel="stylesheet" href="style.css?v=19">
+<!-- theme-service: apply saved theme before first paint (external = CSP-safe) -->
+<script src="theme/theme-init.js"></script>
+<link rel="stylesheet" href="theme/theme.css?v=1">
+<link rel="stylesheet" href="theme/effects.css?v=1">
+<link rel="stylesheet" href="theme/bridge.css?v=1">
+<link rel="stylesheet" href="style.css?v=20">
 </head>
-<body>
+<body class="fx-grid">
 <div id="pausedBanner" class="paused-banner" hidden>
   ⏸ Monitoring is <strong>paused</strong> — no data is being recorded.
   <button class="btn btn-small" data-act="resume">Resume</button>
@@ -250,10 +254,8 @@
   </div>
   <div class="drawer-body">
     <h3>Theme</h3>
-    <div class="theme-pick" role="group" aria-label="Theme">
-      <button data-theme="neon">Neon Rink</button>
-      <button data-theme="midnight">Midnight</button>
-      <button data-theme="daylight">Daylight Glow</button>
+    <div class="row">
+      <select id="themeSelect" aria-label="Theme"></select>
     </div>
     <h3>Speed unit</h3>
     <div class="row">
@@ -347,6 +349,6 @@
 
 <script src="chart.umd.js"></script>
 <script src="favicon.js?v=2"></script>
-<script src="app.js?v=15"></script>
+<script src="app.js?v=16"></script>
 </body>
 </html>

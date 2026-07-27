@@ -316,11 +316,13 @@ tr.clickable:hover td { background: var(--surface-2); }
 .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .row input[type=text] { flex: 1; min-width: 120px; }
 
-.theme-pick { display: flex; gap: 8px; flex-wrap: wrap; }
-.theme-pick button { padding: 6px 12px; border-radius: 10px; cursor: pointer;
-  border: 1px solid var(--border); background: var(--surface-2); }
-.theme-pick button.active { border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent); }
+#themeSelect { width: 100%; max-width: 22rem; }
+
+/* carried over from the old themes.css: honour reduced-motion for the app's
+   own animations (the theme effects gate themselves via --motion) */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
 
 .diag { background: var(--surface-2); border-radius: 10px; padding: 10px;
   font-size: 0.8rem; color: var(--ink-2); }
