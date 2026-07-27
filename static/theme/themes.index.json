@@ -1,0 +1,154 @@
+{
+  "version": "0.3.0",
+  "default": {
+    "family": "rink-classic",
+    "dark": "rink-classic-dark",
+    "light": "rink-classic-light"
+  },
+  "families": [
+    {
+      "family": "rink-classic",
+      "label": "Rink Classic",
+      "dark": "rink-classic-dark",
+      "light": "rink-classic-light"
+    },
+    {
+      "family": "midnight-arcade",
+      "label": "Midnight Arcade",
+      "dark": "midnight-arcade-dark",
+      "light": "midnight-arcade-light"
+    },
+    {
+      "family": "hot-neon",
+      "label": "Hot Neon",
+      "dark": "hot-neon-dark",
+      "light": "hot-neon-light"
+    },
+    {
+      "family": "synthwave-sunset",
+      "label": "Synthwave Sunset",
+      "dark": "synthwave-sunset-dark",
+      "light": "synthwave-sunset-light"
+    },
+    {
+      "family": "acid-arcade",
+      "label": "Acid Arcade",
+      "dark": "acid-arcade-dark",
+      "light": "acid-arcade-light"
+    }
+  ],
+  "themes": [
+    {
+      "id": "rink-classic-dark",
+      "label": "Rink Classic",
+      "family": "rink-classic",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "rink-classic-dark-no-background",
+      "label": "Rink Classic (No Background)",
+      "family": "rink-classic",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "midnight-arcade-dark",
+      "label": "Midnight Arcade",
+      "family": "midnight-arcade",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "midnight-arcade-dark-no-background",
+      "label": "Midnight Arcade (No Background)",
+      "family": "midnight-arcade",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "hot-neon-dark",
+      "label": "Hot Neon",
+      "family": "hot-neon",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "hot-neon-dark-no-background",
+      "label": "Hot Neon (No Background)",
+      "family": "hot-neon",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "synthwave-sunset-dark",
+      "label": "Synthwave Sunset",
+      "family": "synthwave-sunset",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "acid-arcade-dark",
+      "label": "Acid Arcade",
+      "family": "acid-arcade",
+      "mode": "dark",
+      "origin": "built-in"
+    },
+    {
+      "id": "rink-classic-light",
+      "label": "Rink Classic",
+      "family": "rink-classic",
+      "mode": "light",
+      "origin": "built-in"
+    },
+    {
+      "id": "rink-classic-light-no-background",
+      "label": "Rink Classic (No Background)",
+      "family": "rink-classic",
+      "mode": "light",
+      "origin": "built-in"
+    },
+    {
+      "id": "midnight-arcade-light",
+      "label": "Midnight Arcade",
+      "family": "midnight-arcade",
+      "mode": "light",
+      "origin": "built-in"
+    },
+    {
+      "id": "midnight-arcade-light-no-background",
+      "label": "Midnight Arcade (No Background)",
+      "family": "midnight-arcade",
+      "mode": "light",
+      "origin": "built-in"
+    },
+    {
+      "id": "acid-arcade-light",
+      "label": "Acid Arcade",
+      "family": "acid-arcade",
+      "mode": "light",
+      "origin": "built-in"
+    },
+    {
+      "id": "acid-arcade-light-no-background",
+      "label": "Acid Arcade (No Background)",
+      "family": "acid-arcade",
+      "mode": "light",
+      "origin": "built-in"
+    },
+    {
+      "id": "hot-neon-light",
+      "label": "Hot Neon",
+      "family": "hot-neon",
+      "mode": "light",
+      "origin": "built-in"
+    },
+    {
+      "id": "synthwave-sunset-light",
+      "label": "Synthwave Sunset",
+      "family": "synthwave-sunset",
+      "mode": "light",
+      "origin": "built-in"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+/* Accessible custom dropdown (WAI-ARIA listbox), themed via the app tokens so it
+   works in every theme. Progressive enhancement: dropdown.js hides the native
+   <select> (kept as the value store) and builds this. See dropdown.js. */
+
+.drop { position: relative; display: block; }
+/* honour the mirrored `hidden` attr — a bare `display:block` would defeat it
+   (this is what left an empty peer-switcher box in the header) */
+.drop[hidden] { display: none !important; }
+.drop-native { display: none; }            /* native select: value store only */
+/* a dropdown that's the sole control in a settings row fills the width */
+.row > .drop:only-child { flex: 1 1 100%; }
+
+.drop-toggle {
+  width: 100%; display: inline-flex; align-items: center; gap: 8px;
+  min-height: 40px; padding: 0 12px; box-sizing: border-box;
+  background: var(--surface-2); color: var(--ink); font: inherit;
+  border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+  text-align: left; -webkit-user-select: none; user-select: none;
+}
+.drop-toggle:hover,
+.drop-toggle[aria-expanded="true"] { border-color: var(--accent); }
+.drop-toggle:focus-visible { outline: 2px solid var(--accent);
+  outline-offset: 2px; }
+.drop-value { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }
+.drop-toggle .caret { flex: none; color: var(--ink-2); font-size: 0.9em;
+  transition: transform 0.15s ease; }
+.drop-toggle[aria-expanded="true"] .caret { transform: rotate(180deg); }
+
+.drop-panel {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  min-width: 100%; z-index: 60;
+  background: var(--surface-2); border: 1px solid var(--accent);
+  border-radius: 10px; padding: 4px;
+  max-height: 264px; overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+.drop-panel[hidden] { display: none; }
+.drop.drop-up .drop-panel { top: auto; bottom: calc(100% + 6px); }
+
+.drop-row {
+  display: flex; align-items: center; gap: 8px;
+  min-height: 38px; padding: 8px 12px; border-radius: 8px;
+  color: var(--ink); font-size: 0.9rem; cursor: pointer;
+  white-space: nowrap;
+}
+.drop-row:hover,
+.drop-row.active { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.drop-row[aria-selected="true"] { color: var(--accent); font-weight: 600; }
+.drop-row[aria-selected="true"]::after {
+  content: "\2713"; margin-left: auto; color: var(--accent);
+}
+.drop-empty { padding: 12px; text-align: center; color: var(--muted);
+  font-size: 0.85rem; }
+
+/* header machine-switcher sizes to content, not full width */
+.top-actions .drop { display: inline-block; width: auto; }
+.top-actions .drop-toggle { width: auto; }
+.top-actions .drop-panel { left: auto; right: 0; min-width: 200px; }
