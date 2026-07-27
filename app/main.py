@@ -610,8 +610,23 @@ app.mount("/", StaticFiles(directory=config.STATIC_DIR, html=True),
 
 def main() -> None:
     c = config.load()
+    port = c["port"]
+    lan = netinfo.local_ip()
+    print()
+    print("  Go, Web, Go! is currently monitoring network traffic...")
+    print()
+    print("  Monitor your dashboard for mission-critical events:")
+    print(f"    On this machine:   http://localhost:{port}")
+    if lan:
+        print(f"    From your network: http://{lan}:{port}")
+    print()
+    print("  Keep this window open while monitoring. Press Ctrl+C to stop.")
+    print(flush=True)
+    # timeout_graceful_shutdown: force-close the never-ending SSE stream on
+    # Ctrl+C instead of waiting forever for it to finish (that wait is why
+    # Ctrl+C appeared to hang).
     uvicorn.run("app.main:app", host=c["bind"], port=c["port"],
-                log_level="warning")
+                log_level="warning", timeout_graceful_shutdown=2)
 
 
 if __name__ == "__main__":
