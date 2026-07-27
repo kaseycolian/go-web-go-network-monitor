@@ -5,9 +5,9 @@ __pycache__/
 
 # Runtime state (regenerated on first run) — never commit secrets or data
 config.json
-whatthebit.db
-whatthebit.db-wal
-whatthebit.db-shm
+gowebgo.db
+gowebgo.db-wal
+gowebgo.db-shm
 
 # Local tooling / editor
 .claude/

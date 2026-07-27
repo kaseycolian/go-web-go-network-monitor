@@ -1,10 +1,10 @@
-# What the Bit - one-click launcher.
+# Go Web, Go! - one-click launcher.
 # Starts the monitor (if the Scheduled Task isn't already running) and
 # opens the dashboard in the default browser. Used by the desktop shortcut
 # created by make-shortcut.ps1 - not normally run by hand.
 $ErrorActionPreference = "SilentlyContinue"
 
-$port = 8745
+$port = 46299
 $cfg = Join-Path $PSScriptRoot "config.json"
 if (Test-Path $cfg) {
     try {
@@ -13,10 +13,10 @@ if (Test-Path $cfg) {
     } catch {}
 }
 
-$task = Get-ScheduledTask -TaskName "WhatTheBit" -ErrorAction SilentlyContinue
+$task = Get-ScheduledTask -TaskName "GoWebGo" -ErrorAction SilentlyContinue
 if ($task) {
     if ($task.State -ne "Running") {
-        Start-ScheduledTask -TaskName "WhatTheBit"
+        Start-ScheduledTask -TaskName "GoWebGo"
     }
 } else {
     # not installed as a service yet - run it directly in the background
@@ -29,8 +29,8 @@ if ($task) {
             "System.Windows.Forms", [ref]$null) 2>$null
         Add-Type -AssemblyName System.Windows.Forms
         [System.Windows.Forms.MessageBox]::Show(
-            "What the Bit isn't installed yet. Run install.ps1 first.",
-            "What the Bit", "OK", "Warning") | Out-Null
+            "Go Web, Go! isn't installed yet. Run install.ps1 first.",
+            "Go Web, Go!", "OK", "Warning") | Out-Null
         exit 1
     }
 }

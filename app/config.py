@@ -1,4 +1,4 @@
-"""Configuration for What the Bit.
+"""Configuration for Go Web, Go!.
 
 Loads config.json from the project root (one level above this package).
 Creates it with sane defaults on first run.
@@ -11,14 +11,14 @@ import threading
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_PATH = os.path.join(PROJECT_ROOT, "config.json")
-DB_PATH = os.path.join(PROJECT_ROOT, "whatthebit.db")
+DB_PATH = os.path.join(PROJECT_ROOT, "gowebgo.db")
 STATIC_DIR = os.path.join(PROJECT_ROOT, "static")
 
 _lock = threading.Lock()
 
 DEFAULTS = {
     "machine_name": socket.gethostname(),
-    "port": 8745,
+    "port": 46299,
     "bind": "0.0.0.0",
     # Probe cadence (seconds)
     "ping_interval": 3,
@@ -46,7 +46,7 @@ DEFAULTS = {
     "retention_days": 30,
     # Auto-delete logged alerts after this many days (0 = keep forever)
     "alert_retention_days": 90,
-    # Other machines running What the Bit, e.g. ["http://192.168.1.20:8745"]
+    # Other machines running Go Web, Go!, e.g. ["http://192.168.1.20:46299"]
     "peers": [],
     # Auth: numeric passcode (scrypt hash) required from remote devices when
     # auth_enabled. The host machine (localhost) is always exempt. session_secret

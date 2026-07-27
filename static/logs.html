@@ -222,13 +222,13 @@ function busyDownload(el, url, filename) {
 document.getElementById("csv").onclick = (e) => {
   e.preventDefault();
   busyDownload(e.target, `/api/export?table=outages&from=0&to=${now}`,
-               "whatthebit_outages.csv");
+               "gowebgo_outages.csv");
 };
 document.getElementById("json").onclick = (e) => {
   e.preventDefault();
   busyDownload(e.target,
                `/api/export?table=outages&fmt=json&from=0&to=${now}`,
-               "whatthebit_outages.json");
+               "gowebgo_outages.json");
 };
 
 let outages = [];

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# What the Bit — Linux / Raspberry Pi installer.
+# Go Web, Go! — Linux / Raspberry Pi installer.
 # Creates a venv, installs deps, sets a dashboard passcode, and installs a
 # systemd user service so the monitor starts on boot. Run from the project
 # folder:
@@ -7,7 +7,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
-PORT=8745
+PORT=46299
 
 echo "Using $(python3 --version)"
 [ -d .venv ] || python3 -m venv .venv
@@ -30,9 +30,9 @@ if ! grep -q '"password_hash": "' config.json 2>/dev/null; then
 fi
 
 mkdir -p ~/.config/systemd/user
-cat > ~/.config/systemd/user/whatthebit.service <<EOF
+cat > ~/.config/systemd/user/gowebgo.service <<EOF
 [Unit]
-Description=What the Bit network monitor
+Description=Go Web, Go! network monitor
 After=network.target
 
 [Service]
@@ -46,7 +46,7 @@ WantedBy=default.target
 EOF
 
 systemctl --user daemon-reload
-systemctl --user enable --now whatthebit.service
+systemctl --user enable --now gowebgo.service
 # keep the user service running without an open login session
 loginctl enable-linger "$USER" 2>/dev/null || true
 

@@ -1,4 +1,4 @@
-# What the Bit - Windows installer.
+# Go Web, Go! - Windows installer.
 # NOTE: keep this file pure ASCII - Windows PowerShell 5.1 misreads UTF-8
 # without a BOM, and characters like em dashes break parsing.
 # Creates a venv, installs deps, sets a dashboard passcode, opens the firewall
@@ -6,7 +6,7 @@
 # monitor starts at logon. Run from the project folder:
 #   powershell -ExecutionPolicy Bypass -File install.ps1
 param(
-    [int]$Port = 8745,
+    [int]$Port = 46299,
     [string]$PythonExe = ""
 )
 $ErrorActionPreference = "Stop"
@@ -51,7 +51,7 @@ if (-not $hasPin) {
 }
 
 # -- firewall: allow inbound on the Private profile only
-$ruleName = "What the Bit ($Port)"
+$ruleName = "Go Web, Go! ($Port)"
 if (-not (Get-NetFirewallRule -DisplayName $ruleName -ErrorAction SilentlyContinue)) {
     try {
         New-NetFirewallRule -DisplayName $ruleName -Direction Inbound `
@@ -65,7 +65,7 @@ if (-not (Get-NetFirewallRule -DisplayName $ruleName -ErrorAction SilentlyContin
 }
 
 # -- scheduled task: start at logon, restart on failure
-$taskName = "WhatTheBit"
+$taskName = "GoWebGo"
 $action = New-ScheduledTaskAction -Execute $venvPy `
     -Argument "-m app.main" -WorkingDirectory $root
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME

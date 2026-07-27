@@ -1,1 +1,1 @@
-"""What the Bit — home network monitor and dashboard."""
+"""Go Web, Go! — home network monitor and dashboard."""
