@@ -85,3 +85,23 @@ $ip = (Get-NetIPAddress -AddressFamily IPv4 |
 Write-Host ""
 Write-Host "Done! Dashboard:  http://localhost:$Port"
 if ($ip) { Write-Host "From your phone: http://${ip}:$Port" }
+
+Write-Host ""
+Write-Host "Creating Windows Desktop Shortcut..."
+
+Write-Host ""
+
+try { powershell -ExecutionPolicy Bypass -File make-shortcut.ps1 } catch { 
+    Write-Host "Unable to create shortcut. Must run launch.ps1 script for future usages." }
+
+Write-Host ""
+Write-Host ""
+
+Write-Host "Monitoring has begun, you may close this terminal at any time...."
+
+Write-Host ""
+Write-Host ""
+Write-Host "Use Go, Web, Go! desktop shortcut to launch in the future."
+
+Write-Host ""
+Write-Host ""
