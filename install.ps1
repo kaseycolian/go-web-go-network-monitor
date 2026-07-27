@@ -4,7 +4,9 @@
 # Creates a venv, installs deps, sets a dashboard passcode, opens the firewall
 # port (Private profile only) and registers a per-user Scheduled Task so the
 # monitor starts at logon. Run from the project folder:
+
 #   powershell -ExecutionPolicy Bypass -File install.ps1
+
 param(
     [int]$Port = 46299,
     [string]$PythonExe = ""
