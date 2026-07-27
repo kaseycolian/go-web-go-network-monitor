@@ -119,7 +119,7 @@ input:focus-visible, select:focus-visible {
 }
 
 /* ------------------------------------------------------------- layout */
-main { max-width: 1080px; margin: 0 auto; padding: 12px;
+main { max-width: 1720px; margin: 0 auto; padding: 12px;
        display: flex; flex-direction: column; gap: 12px; }
 
 .rangebar { display: flex; align-items: center; gap: 8px; }
@@ -235,6 +235,9 @@ main { max-width: 1080px; margin: 0 auto; padding: 12px;
 
 @media (max-width: 560px) {
   .alert-form { flex-direction: column; align-items: stretch; }
+  /* in a column, flex-basis is height — clear the 240px so fields hug their
+     content instead of leaving a tall empty gap */
+  .af-metric { flex: 0 1 auto; }
   .af-field, .af-add { width: 100%; }
   .af-inline { width: 100%; }
   .alert-form input[type=number] { flex: 1 1 auto; width: 100%; }

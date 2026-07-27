@@ -7,14 +7,16 @@
 
 :root, :root[data-theme="neon"] {
   color-scheme: dark;
-  --page: #07080b;
-  --surface: #0d0f14;
-  --surface-2: #141822;
+  /* deep near-black ramp with a violet tint (not blue-grey): page ~black,
+     each step a touch more saturated purple */
+  --page: #06040c;
+  --surface: #130e26;
+  --surface-2: #211b42;
   --ink: #f2f4f8;
   --ink-2: #aab2c0;
-  --muted: #78808f;
-  --grid: #1d222e;
-  --baseline: #2b3242;
+  --muted: #7c7a95;
+  --grid: #251d40;
+  --baseline: #382d5a;
   --border: rgba(255,255,255,0.10);
   --accent: #e04a92;
   --logo: #22e0a3;   /* app-mark: neon green-teal, complements the pink */
@@ -35,7 +37,7 @@
   --lay-link: #d6336c;  /* link outage: cable/dock/adapter/WiFi */
   --lay-lan: #1098ad;   /* router/LAN outage */
   --lay-inet: #9a79ea;  /* internet (ISP) outage */
-  --idle: #2b3242;      /* not monitoring */
+  --idle: #322a52;      /* not monitoring */
   --glow: 0 0 14px;
   /* scrollbar tint (Firefox solid fallback); recomputes per theme */
   --scrollbar: color-mix(in srgb, var(--accent) 55%, var(--page));
