@@ -26,8 +26,28 @@
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 ::-webkit-scrollbar-corner { background: transparent; }
 
-html { font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
-body { background: var(--page); color: var(--ink); min-height: 100vh; }
+html { font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  scrollbar-gutter: stable; }  /* reserve gutter so locking scroll doesn't shift */
+body {
+  color: var(--ink); min-height: 100vh;
+  /* the theme page + panel colors are nearly identical, so transparency alone
+     reveals nothing. A soft, viewport-fixed accent glow gives the translucent
+     panels something themed to bleed through — the grid pattern is untouched. */
+  background-color: var(--page);
+  background-image:
+    radial-gradient(120% 72% at 18% -5%,
+      color-mix(in srgb, var(--accent-pink) 15%, transparent) 0%, transparent 55%),
+    radial-gradient(120% 72% at 92% 105%,
+      color-mix(in srgb, var(--accent-blue) 13%, transparent) 0%, transparent 55%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+/* settings drawer open: lock page scroll so only the drawer scrolls (no
+   double scrollbar); the gutter above keeps the layout from shifting */
+body.drawer-open { overflow: hidden; }
+.drawer-backdrop { position: fixed; inset: 0; z-index: 55;
+  background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px); }
+.drawer-backdrop[hidden] { display: none; }
 h1 { font-size: 1.05rem; font-weight: 650; }
 h2 { font-size: 0.95rem; font-weight: 650; }
 h3 { font-size: 0.8rem; font-weight: 600; color: var(--ink-2);
@@ -48,7 +68,11 @@ button:disabled { cursor: not-allowed; }
 /* ------------------------------------------------------------- topbar */
 .topbar {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 10px 16px; background: var(--surface);
+  padding: 10px 16px;
+  /* frosted so the theme backdrop shows through the sticky header */
+  background-color: color-mix(in srgb, var(--surface) 68%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  backdrop-filter: blur(14px) saturate(1.15);
   border-bottom: 1px solid var(--border);
   position: sticky; top: 0; z-index: 40;
   /* arrow cursor over non-interactive header text — links/buttons set
@@ -134,7 +158,13 @@ main { max-width: 1720px; margin: 0 auto; padding: 12px;
   color: var(--ink); font-weight: 650; }
 
 .card {
-  background: var(--surface); border: 1px solid var(--border);
+  /* translucent frosted panel: lets each theme's page glow + grid backdrop
+     show through instead of a flat opaque block. The blur keeps text legible
+     over the busy backdrop, so we can go fairly transparent. */
+  background-color: color-mix(in srgb, var(--surface) 55%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(1.2);
+  backdrop-filter: blur(9px) saturate(1.2);
+  border: 1px solid var(--border);
   border-radius: 14px; padding: 14px 16px;
 }
 .card-head { display: flex; align-items: baseline; gap: 10px;
@@ -178,7 +208,11 @@ main { max-width: 1720px; margin: 0 auto; padding: 12px;
 /* ------------------------------------------------------------- tiles */
 .tiles { display: grid; gap: 12px;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-.tile { background: var(--surface); border: 1px solid var(--border);
+.tile {
+  background-color: color-mix(in srgb, var(--surface) 55%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(1.2);
+  backdrop-filter: blur(9px) saturate(1.2);
+  border: 1px solid var(--border);
   border-radius: 14px; padding: 12px 14px; min-height: 118px;
   display: flex; flex-direction: column; gap: 4px; }
 .tile .big { font-size: 1.7rem; font-weight: 700;

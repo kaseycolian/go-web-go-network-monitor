@@ -10,8 +10,9 @@
 <script src="theme/theme-init.js"></script>
 <link rel="stylesheet" href="theme/theme.css?v=1">
 <link rel="stylesheet" href="theme/effects.css?v=1">
-<link rel="stylesheet" href="theme/bridge.css?v=1">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="theme/bridge.css?v=3">
+<link rel="stylesheet" href="dropdown.css?v=3">
+<link rel="stylesheet" href="style.css?v=25">
 </head>
 <body class="fx-grid">
 <div id="pausedBanner" class="paused-banner" hidden>
@@ -41,7 +42,7 @@
   </div>
   <div class="top-actions">
     <span class="app-name">Go,&nbsp;Web,&nbsp;Go!</span>
-    <select id="peerSwitch" class="peer-switch" hidden
+    <select id="peerSwitch" class="peer-switch" hidden data-drop
             aria-label="Switch machine"></select>
     <button id="settingsBtn" class="icon-btn" aria-label="Settings">⚙</button>
   </div>
@@ -119,7 +120,7 @@
       <div class="alert-form" role="group" aria-label="New alert rule">
         <div class="af-field af-metric">
           <label class="af-label" for="alertMetric">Condition</label>
-          <select id="alertMetric">
+          <select id="alertMetric" data-drop aria-label="Alert condition">
             <option value="latency_ms">Latency rises above</option>
             <option value="loss_pct">Packet loss rises above</option>
             <option value="quality">Quality drops below</option>
@@ -148,7 +149,7 @@
       <div id="alertRules" class="alert-rules"></div>
       <div class="row alert-retention-row">
         <label class="hint" for="alertRetention">Auto-delete alerts after</label>
-        <select id="alertRetention" aria-label="Alert retention">
+        <select id="alertRetention" data-drop aria-label="Alert retention">
           <option value="30">30 days</option>
           <option value="60">60 days</option>
           <option value="90">90 days</option>
@@ -247,6 +248,7 @@
   </section>
 </main>
 
+<div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
 <aside id="drawer" class="drawer" hidden aria-label="Settings">
   <div class="drawer-head">
     <h2>Settings</h2>
@@ -255,11 +257,11 @@
   <div class="drawer-body">
     <h3>Theme</h3>
     <div class="row">
-      <select id="themeSelect" aria-label="Theme"></select>
+      <select id="themeSelect" data-drop aria-label="Theme"></select>
     </div>
     <h3>Speed unit</h3>
     <div class="row">
-      <select id="unitSelect" aria-label="Speed unit">
+      <select id="unitSelect" data-drop aria-label="Speed unit">
         <option value="Kbps">Kbps (kilobits/s)</option>
         <option value="Mbps">Mbps (megabits/s)</option>
         <option value="Gbps">Gbps (gigabits/s)</option>
@@ -349,6 +351,7 @@
 
 <script src="chart.umd.js"></script>
 <script src="favicon.js?v=2"></script>
-<script src="app.js?v=16"></script>
+<script src="dropdown.js?v=2"></script>
+<script src="app.js?v=18"></script>
 </body>
 </html>

@@ -119,7 +119,7 @@ function setUnit(u) {
   state.unit = u;
   localStorage.setItem("wtb_unit", u);
   const sel = $("unitSelect");
-  if (sel) sel.value = u;
+  if (sel) { sel.value = u; if (sel._drop) sel._drop.sync(); }
   if (state.status) onStatus(state.status);  // refresh live tiles
   refreshMetrics().catch(() => {});           // rebuild charts in new unit
 }
@@ -563,6 +563,7 @@ function onStatus(s) {
       (p) => `<option value="${p}">${p.replace(/^https?:\/\//, "")}</option>`)
       .join("");
     sw.hidden = false;
+    if (sw._drop) sw._drop.rebuild();
   }
 }
 
@@ -819,7 +820,9 @@ function wireAlerts() {
   };
 
   api("/api/alerts/config").then((c) => {
-    $("alertRetention").value = String(c.retention_days);
+    const r = $("alertRetention");
+    r.value = String(c.retention_days);
+    if (r._drop) r._drop.sync();
   }).catch(() => {});
   $("alertRetention").onchange = (ev) =>
     apiAuth("/api/alerts/config", { method: "POST",
@@ -877,8 +880,22 @@ function wireActions() {
     if (b) { const d = b.closest("dialog"); if (d) d.close("cancel"); }
   });
 
-  $("settingsBtn").onclick = () => { $("drawer").hidden = false; };
-  $("closeDrawer").onclick = () => { $("drawer").hidden = true; };
+  const openDrawer = () => {
+    $("drawer").hidden = false;
+    $("drawerBackdrop").hidden = false;
+    document.body.classList.add("drawer-open");  // lock page scroll
+  };
+  const closeDrawer = () => {
+    $("drawer").hidden = true;
+    $("drawerBackdrop").hidden = true;
+    document.body.classList.remove("drawer-open");
+  };
+  $("settingsBtn").onclick = openDrawer;
+  $("closeDrawer").onclick = closeDrawer;
+  $("drawerBackdrop").onclick = closeDrawer;
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !$("drawer").hidden) closeDrawer();
+  });
 
   $("latInfo").onclick = () => {
     const open = $("latTip").hidden;
@@ -1018,6 +1035,10 @@ function wireActions() {
     "the passcode.";
 
   wireSecurity();
+
+  // upgrade every native <select data-drop> to the accessible custom dropdown
+  // (options are all populated by now: theme list, unit, alert selects)
+  if (window.WtbDrop) window.WtbDrop.enhanceAll();
 }
 
 /* ---------------------------------------------------------- security UI */
