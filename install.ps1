@@ -105,7 +105,7 @@ Write-Host "Use Go, Web, Go! desktop shortcut to launch in the future."
 Write-Host ""
 Write-Host ""
 
-Write-Host "Mission control has begun monitoring, you may close this terminal at any time...."
+Write-Host "Mission control has been activated, you may close this terminal at any time...."
 
 Write-Host ""
 Write-Host ""

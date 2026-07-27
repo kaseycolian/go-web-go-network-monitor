@@ -620,6 +620,8 @@ def main() -> None:
     if lan:
         print(f"    From your network: http://{lan}:{port}")
     print()
+    print(" Mission Control is now monitoring network activity...")
+    print()
     print("  Keep this window open while monitoring. Press Ctrl+C to stop.")
     print(flush=True)
     # timeout_graceful_shutdown: force-close the never-ending SSE stream on
