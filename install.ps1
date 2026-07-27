@@ -77,7 +77,9 @@ try { Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction 
 Register-ScheduledTask -TaskName $taskName -Action $action `
     -Trigger $trigger -Settings $settings | Out-Null
 Start-ScheduledTask -TaskName $taskName
+Write-Host ""
 Write-Host "Scheduled task '$taskName' registered and started."
+Write-Host ""
 
 $ip = (Get-NetIPAddress -AddressFamily IPv4 |
     Where-Object { $_.IPAddress -notlike "169.254*" -and $_.IPAddress -ne "127.0.0.1" } |
